@@ -60,7 +60,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			return fmt.Sprintf("%.2f", familiarity)
 		},
 	}
-	tpl, err := ace.Load("example", "", &ace.Options{
+	tpl, err := ace.Load("index", "", &ace.Options{
 		DynamicReload: true,
 		FuncMap:       funcMap,
 	})

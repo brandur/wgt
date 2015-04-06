@@ -1,0 +1,11 @@
+{
+	"ImportPath": "github.com/brandur/wgt",
+	"GoVersion": "go1.3.3",
+	"Deps": [
+		{
+			"ImportPath": "github.com/yosssi/ace",
+			"Comment": "v0.0.4-35-g5b6d08c",
+			"Rev": "5b6d08c57282ff44a1af16d2aad71732b5b21932"
+		}
+	]
+}

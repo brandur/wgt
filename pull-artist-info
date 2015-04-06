@@ -1,3 +1,57 @@
 #!/usr/bin/env ruby
 
+require "excon"
+require "json"
+
+def artist_info(name)
+  resp = CONN.get(
+    expects: 200,
+    path: "/api/v4/artist/profile",
+    query: {
+      api_key: API_KEY,
+      bucket:  [
+        "artist_location",
+        "familiarity",
+        "genre",
+        "songs",
+        "urls",
+        "video",
+      ],
+      format:  "json",
+      name:    name,
+    }
+  )
+  info = JSON.load(resp.body, nil, symbolize_names: true)[:response][:artist]
+  if info
+    puts <<-eos
+== #{info[:name]}
+    Familiarity:   #{info[:familiarity]}
+    Genres:        #{info.fetch(:genres, {}).map { |g| g[:name] }.sort.join(", ")}
+    Location:      #{info.fetch(:artist_location, {})[:location]}
+    Popular Songs: #{info.fetch(:songs, {}).map { |s| s[:title] }.uniq[0, 3].join(", ")}
+    Sample:        #{(info.fetch(:video, {}).detect { |v| v[:site] == "youtube.com" } || {})[:url]}
+    Wikipedia:     #{info.fetch(:urls, {})[:wikipedia_url]}
+
+    eos
+  else
+    puts <<-eos
+== #{name}
+    NOT FOUND
+
+    eos
+  end
+rescue Excon::Errors::Error
+  if $!.response.status == 429
+    $stderr.puts "rate limited; sleeping"
+    sleep(5)
+  else
+    $stderr.puts "error status: #{$!.response.status}"
+    $stderr.puts "error body: #{$!.response.body}"
+  end
+end
+
+API_KEY = ENV["ECHO_NEST_API_KEY"] || abort("need ECHO_NEST_API_KEY")
+CONN = Excon.new("https://developer.echonest.com")
+
 contents = ARGF.read
+contents.each_line { |n| artist_info(n) }

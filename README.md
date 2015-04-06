@@ -5,7 +5,7 @@
 Clean up [WGT's confirmed artists list](http://www.wave-gotik-treffen.de/english/bands.php).
 
 ``` sh
-./clean-artists artists-2015-04-05
+./clean-artists artists-2015-04-05 | head -n 1 | dotenv ./pull-artist-info
 ```
 
 ## View

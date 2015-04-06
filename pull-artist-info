@@ -23,13 +23,17 @@ def artist_info(name)
   )
   info = JSON.load(resp.body, nil, symbolize_names: true)[:response][:artist]
   if info
+    location = info[:artist_location]
+    sample = info.fetch(:video, {}).detect { |v| v[:site] == "youtube.com" }
+
     puts <<-eos
 == #{info[:name]}
     Familiarity:   #{info[:familiarity]}
     Genres:        #{info.fetch(:genres, {}).map { |g| g[:name] }.sort.join(", ")}
-    Location:      #{info.fetch(:artist_location, {})[:location]}
+    Home:          #{info.fetch(:urls, {})[:official_url]}
+    Location:      #{location ? "#{location[:city]}, #{location[:country]}" : ""}
     Popular Songs: #{info.fetch(:songs, {}).map { |s| s[:title] }.uniq[0, 3].join(", ")}
-    Sample:        #{(info.fetch(:video, {}).detect { |v| v[:site] == "youtube.com" } || {})[:url]}
+    Sample:        #{sample ? sample[:url] : ""}
     Wikipedia:     #{info.fetch(:urls, {})[:wikipedia_url]}
 
     eos

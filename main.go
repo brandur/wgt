@@ -36,33 +36,9 @@ var (
 )
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	funcMap := template.FuncMap{
-		"JoinStrings": func(strs []string) string {
-			return strings.Join(strs, ", ")
-		},
-		"SafeLink": func(uri *string, text string) template.HTML {
-			if uri != nil {
-				return template.HTML(fmt.Sprintf(`<a href="%s">%s</a>`, *uri, text))
-			} else {
-				return ""
-			}
-		},
-		"SafeLocation": func(location *ArtistLocation) string {
-			if location != nil && location.City != nil {
-				return *location.City + ", " + *location.Country
-			} else if location != nil {
-				return *location.Country
-			} else {
-				return ""
-			}
-		},
-		"TruncateFamiliarity": func(familiarity float32) string {
-			return fmt.Sprintf("%.2f", familiarity)
-		},
-	}
 	tpl, err := ace.Load("index", "", &ace.Options{
 		DynamicReload: true,
-		FuncMap:       funcMap,
+		FuncMap:       templateFuncMap(),
 	})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -91,6 +67,33 @@ func readArtists() []Artist {
 	}
 
 	return artists
+}
+
+func templateFuncMap() template.FuncMap {
+	return template.FuncMap{
+		"JoinStrings": func(strs []string) string {
+			return strings.Join(strs, ", ")
+		},
+		"SafeLink": func(uri *string, text string) template.HTML {
+			if uri != nil {
+				return template.HTML(fmt.Sprintf(`<a href="%s">%s</a>`, *uri, text))
+			} else {
+				return ""
+			}
+		},
+		"SafeLocation": func(location *ArtistLocation) string {
+			if location != nil && location.City != nil {
+				return *location.City + ", " + *location.Country
+			} else if location != nil {
+				return *location.Country
+			} else {
+				return ""
+			}
+		},
+		"TruncateFamiliarity": func(familiarity float32) string {
+			return fmt.Sprintf("%.2f", familiarity)
+		},
+	}
 }
 
 func main() {

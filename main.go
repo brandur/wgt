@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/yosssi/ace"
@@ -98,6 +99,11 @@ func templateFuncMap() template.FuncMap {
 
 func main() {
 	artists = readArtists()
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
 	http.HandleFunc("/", handler)
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+port, nil)
 }

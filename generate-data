@@ -34,8 +34,9 @@ def artist_info(name)
         country:       location[:country],
       } : nil,
       name:            info[:name],
-      popular_songs:   info.fetch(:songs, {}).map { |s| s[:title] }.uniq[0, 3],
-      sample:          sample ? sample[:url] : "",
+      popular_songs:   info.fetch(:songs, {}).map { |s| s[:title] }.
+        uniq { |s| s.downcase }[0, 3].sort,
+      sample:          sample ? sample[:url] : nil,
       urls: {
         home_url:      info.fetch(:urls, {})[:official_url],
         wikipedia_url: info.fetch(:urls, {})[:wikipedia_url],
@@ -49,9 +50,11 @@ rescue Excon::Errors::Error
   if $!.response.status == 429
     $stderr.puts "rate limited; sleeping"
     sleep(5)
+    retry
   else
     $stderr.puts "error status: #{$!.response.status}"
     $stderr.puts "error body: #{$!.response.body}"
+    abort("unexpected HTTP response")
   end
 end
 
@@ -59,5 +62,7 @@ API_KEY = ENV["ECHO_NEST_API_KEY"] || abort("need ECHO_NEST_API_KEY")
 CONN = Excon.new("https://developer.echonest.com")
 
 contents = ARGF.read
-artists = contents.each_line.map { |n| artist_info(n) }.compact
+artists = contents.each_line.map { |n| artist_info(n) }.
+  compact.
+  sort_by { |i| i[:name] }
 puts JSON.dump(artists)

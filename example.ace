@@ -9,52 +9,55 @@ html lang=en
     title Single Template
     link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"
     link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/darkly/bootstrap.min.css"
+
   body
-    nav class="navbar navbar-default"
-      .container
-        div class="navbar-header"
-          button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
-            span class="sr-only" Toggle navigation
-            span class="icon-bar"
-            span class="icon-bar"
-            span class="icon-bar"
-          a class="navbar-brand" href="#" Project name
-        div id="navbar" class="collapse navbar-collapse"
-          ul class="nav navbar-nav"
-            li class="active"
-              a href="#" Home
-            li
-              a href="#about" About
-            li
-              a href="#contact" Contact
+    /
+      nav class="navbar navbar-default"
+        .container
+          div class="navbar-header"
+            button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
+              span class="sr-only" Toggle navigation
+              span class="icon-bar"
+              span class="icon-bar"
+              span class="icon-bar"
+            a class="navbar-brand" href="#" Project name
+          div id="navbar" class="collapse navbar-collapse"
+            ul class="nav navbar-nav"
+              li class="active"
+                a href="#" Home
+              li
+                a href="#about" About
+              li
+                 a href="#contact" Contact
     .container
       div class="starter-template"
-        h1 Single Template
+        h1 WGT Guide
+        p.lead Your daily digest for the Wave-Gotik-Treffen.
 
-        p.lead Some lead text.
+        h2 Artists
+        p List of artists that are confirmed at WGT so far.
 
         table class="table table-striped table-hover"
           tr
-            th Table Header 1
-            th Table Header 2
+            th Artist
+            th Familiarity
+            th Location
+            th Genres
+            th Popular Songs
+            th Sample
+            th Homepage
+            th Wikipedia
+          {{range .artists}}
           tr
-            td val1-1
-            td val1-2
-          tr
-            td val2-1
-            td val2-2
-          tr
-            td val3-1
-            td val3-2
-          tr
-            td val4-1
-            td val4-2
-
-      ul
-        li List
-        li should
-        li confirm
-        li it?
+            td {{.Name}}
+            td {{TruncateFamiliarity .Familiarity}}
+            td {{SafeLocation .Location}}
+            td {{JoinStrings .Genres}}
+            td {{JoinStrings .PopularSongs}}
+            td {{SafeLink .Sample "Sample"}}
+            td {{SafeLink .URLs.HomeURL "Homepage"}}
+            td {{SafeLink .URLs.WikipediaURL "Wikipedia"}}
+          {{end}}
 
     script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"
     script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"

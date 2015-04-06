@@ -26,23 +26,24 @@ def artist_info(name)
     location = info[:artist_location]
     sample = info.fetch(:video, {}).detect { |v| v[:site] == "youtube.com" }
 
-    puts <<-eos
-== #{info[:name]}
-    Familiarity:   #{info[:familiarity]}
-    Genres:        #{info.fetch(:genres, {}).map { |g| g[:name] }.sort.join(", ")}
-    Home:          #{info.fetch(:urls, {})[:official_url]}
-    Location:      #{location ? "#{location[:city]}, #{location[:country]}" : ""}
-    Popular Songs: #{info.fetch(:songs, {}).map { |s| s[:title] }.uniq[0, 3].join(", ")}
-    Sample:        #{sample ? sample[:url] : ""}
-    Wikipedia:     #{info.fetch(:urls, {})[:wikipedia_url]}
-
-    eos
+    {
+      familiarity:     info[:familiarity],
+      genres:          info.fetch(:genres, {}).map { |g| g[:name] }.sort,
+      location: location ? {
+        city:          location[:city],
+        country:       location[:country],
+      } : nil,
+      name:            info[:name],
+      popular_songs:   info.fetch(:songs, {}).map { |s| s[:title] }.uniq[0, 3],
+      sample:          sample ? sample[:url] : "",
+      urls: {
+        home_url:      info.fetch(:urls, {})[:official_url],
+        wikipedia_url: info.fetch(:urls, {})[:wikipedia_url],
+      },
+    }
   else
-    puts <<-eos
-== #{name}
-    NOT FOUND
-
-    eos
+    $stderr.puts "not found: #{name}"
+    nil
   end
 rescue Excon::Errors::Error
   if $!.response.status == 429
@@ -58,4 +59,5 @@ API_KEY = ENV["ECHO_NEST_API_KEY"] || abort("need ECHO_NEST_API_KEY")
 CONN = Excon.new("https://developer.echonest.com")
 
 contents = ARGF.read
-contents.each_line { |n| artist_info(n) }
+artists = contents.each_line.map { |n| artist_info(n) }.compact
+puts JSON.dump(artists)

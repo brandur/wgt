@@ -1,11 +1,14 @@
 # WGT Playground
 
-## Extract/Load/Transform
+## Extract
 
-Clean up [WGT's confirmed artists list](http://www.wave-gotik-treffen.de/english/bands.php).
+Visit [WGT's confirmed artists list](http://www.wave-gotik-treffen.de/english/bands.php). Copy the big blob of artists and save to `artists-2015-04-05` (or something appropriate).
+
+## Load/Transform
 
 ``` sh
-./clean-artists artists-2015-04-05 | head -n 1 | dotenv ./pull-artist-info
+export ECHO_NEST_API_KEY=
+./clean-artists artists-2015-04-05 | ./generate-data > data.json
 ```
 
 ## View

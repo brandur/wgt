@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+contents = ARGF.read
+puts contents.split("-").
+  map(&:strip).
+  map { |a| a.gsub(/ \(.*\).*$/, '') }.
+  select { |a| !a.empty? }.
+  sort

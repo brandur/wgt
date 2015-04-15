@@ -8,7 +8,7 @@ Visit [WGT's confirmed artists list](http://www.wave-gotik-treffen.de/english/ba
 
 ``` sh
 export ECHO_NEST_API_KEY=
-./clean-artists artists-2015-04-05 | ./generate-data > data.json
+bin/clean-artists artists-2015-04-15 | bin/generate-data > data.json
 ```
 
 ## View

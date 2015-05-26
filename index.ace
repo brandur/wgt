@@ -42,7 +42,7 @@ html lang=en
     .container
       div
         h1 WGT Information
-        p.lead Your one-stop information source for the Wave-Gotik-Treffen.
+        p.lead An artist informational list for the Wave-Gotik-Treffen.
 
         h2 Artists
         p List of artists that are confirmed at WGT so far.
